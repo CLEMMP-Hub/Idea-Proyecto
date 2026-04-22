@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Interactivo - Seguros CBA</title>
+    <!-- Tailwind CSS para diseño rápido y moderno -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome para Íconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            900: '#0c4a6e',
+                            950: '#082f49',
+                        },
+                        dark: {
+                            800: '#0f172a',
+                            900: '#020617',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Styles & Animations */
+        body {
+            background-color: #020617;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(200,100%,20%,0.2) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, hsla(250,100%,20%,0.2) 0px, transparent 50%);
+            background-attachment: fixed;
+            color: #e2e8f0;
+        }
+
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        /* Flip Card Animation */
+        .flip-card {
+            perspective: 1000px;
+            height: 100%;
+        }
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 1rem;
+        }
+        .flip-card-back {
+            transform: rotateY(180deg);
+            background: linear-gradient(145deg, #0f172a, #082f49);
+            border: 1px solid #0ea5e9;
+        }
+
+        /* Fade in animation */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #020617; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #38bdf8; }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8">
+
+    <!-- Header -->
+    <header class="max-w-7xl mx-auto mb-8 text-center md:text-left flex flex-col md:flex-row justify-between items-center fade-in">
+        <div>
+            <h1 class="text-4xl md:text-5xl font-heading font-bold text-white tracking-tight">
+                Canvas del Sistema <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-blue-600">Seguros CBA</span>
+            </h1>
+            <p class="text-slate-400 mt-2 text-lg">Plataforma integral: Gestión de Broker + Autogestión + IA</p>
+        </div>
+        <div class="mt-4 md:mt-0 flex gap-3">
+            <span class="px-4 py-2 rounded-full glass-panel text-sm text-brand-400 border border-brand-900"><i class="fa-solid fa-graduation-cap mr-2"></i>Proyecto de Tesis</span>
+        </div>
+    </header>
+
+    <!-- Main Canvas Grid (Bento Box Style) -->
+    <main class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 auto-rows-min gap-6">
+
+        <!-- 1. PROBLEMA (Flip Card) - Col span 4 -->
+        <section class="col-span-1 md:col-span-4 h-80 rounded-2xl cursor-pointer flip-card fade-in" style="animation-delay: 0.1s;">
+            <div class="flip-card-inner">
+                <!-- Front -->
+                <div class="flip-card-front glass-panel p-8 flex flex-col justify-center items-center text-center">
+                    <div class="w-16 h-16 rounded-full bg-slate-800 flex items-center justify-center mb-6 border border-slate-700">
+                        <i class="fa-solid fa-magnifying-glass-chart text-2xl text-slate-300"></i>
+                    </div>
+                    <h2 class="text-2xl font-heading font-semibold text-white mb-2">Contexto Actual</h2>
+                    <p class="text-slate-400">Pasa el cursor para ver la problemática que resuelve la tesis.</p>
+                    <div class="mt-auto animate-bounce text-brand-500">
+                        <i class="fa-solid fa-arrow-rotate-right"></i>
+                    </div>
+                </div>
+                <!-- Back -->
+                <div class="flip-card-back p-8 flex flex-col justify-center">
+                    <h2 class="text-xl font-heading font-semibold text-brand-400 mb-4 border-b border-brand-900 pb-2">Puntos de Dolor</h2>
+                    <ul class="space-y-3 text-sm text-slate-300">
+                        <li class="flex items-start"><i class="fa-solid fa-xmark text-red-400 mt-1 mr-2"></i> <strong>Gestión Manual:</strong> Uso de Excel para clientes, sin trazabilidad.</li>
+                        <li class="flex items-start"><i class="fa-solid fa-xmark text-red-400 mt-1 mr-2"></i> <strong>Descentralización:</strong> Pólizas dispersas en portales de 13 aseguradoras.</li>
+                        <li class="flex items-start"><i class="fa-solid fa-xmark text-red-400 mt-1 mr-2"></i> <strong>Cuello de Botella:</strong> Dependencia total de WhatsApp para cada consulta o siniestro.</li>
+                        <li class="flex items-start"><i class="fa-solid fa-xmark text-red-400 mt-1 mr-2"></i> <strong>Cero Autogestión:</strong> El cliente no puede ver sus pólizas ni cupones de forma independiente.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. ECOSISTEMA (Interactive Tabs) - Col span 8 -->
+        <section class="col-span-1 md:col-span-8 glass-panel rounded-2xl p-6 md:p-8 fade-in flex flex-col" style="animation-delay: 0.2s;">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                <h2 class="text-2xl font-heading font-semibold text-white"><i class="fa-solid fa-cubes text-brand-500 mr-2"></i> Propuesta de Valor: El Ecosistema</h2>
+                
+                <!-- Tab Buttons -->
+                <div class="flex space-x-2 bg-slate-800/50 p-1 rounded-lg border border-slate-700">
+                    <button onclick="switchTab('crm')" id="tab-crm" class="tab-btn active px-4 py-2 rounded-md text-sm font-medium transition-all bg-brand-600 text-white shadow-lg">CRM / Web</button>
+                    <button onclick="switchTab('app')" id="tab-app" class="tab-btn px-4 py-2 rounded-md text-sm font-medium text-slate-400 hover:text-white transition-all">App Móvil</button>
+                    <button onclick="switchTab('ia')" id="tab-ia" class="tab-btn px-4 py-2 rounded-md text-sm font-medium text-slate-400 hover:text-white transition-all">Módulos IA</button>
+                </div>
+            </div>
+
+            <!-- Tab Content Area -->
+            <div class="flex-grow grid grid-cols-1 bg-slate-900/50 rounded-xl border border-slate-800 p-6 relative">
+                
+                <!-- Content: CRM -->
+                <div id="content-crm" class="tab-content col-start-1 row-start-1 flex flex-col md:flex-row gap-6 w-full transition-opacity duration-300 opacity-100 z-10">
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-white mb-3">Backoffice para Productores</h3>
+                        <p class="text-slate-400 text-sm mb-4">El corazón operativo del broker. Centraliza toda la información de las 13 compañías en una sola vista.</p>
+                        <ul class="space-y-2 text-sm text-slate-300">
+                            <li><i class="fa-solid fa-check text-brand-400 mr-2"></i> ABMC centralizado de Clientes y Pólizas.</li>
+                            <li><i class="fa-solid fa-check text-brand-400 mr-2"></i> Dashboards de ventas, renovaciones y comisiones.</li>
+                            <li><i class="fa-solid fa-check text-brand-400 mr-2"></i> Control del programa de referidos y envío automático de recordatorios.</li>
+                        </ul>
+                    </div>
+                    <div class="flex-1 hidden md:block rounded-lg overflow-hidden border border-slate-700 h-48 md:h-auto">
+                        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80" alt="Dashboard CRM y métricas" class="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity" onerror="this.src='https://placehold.co/600x400/1e293b/38bdf8?text=Dashboard+CRM'">
+                    </div>
+                </div>
+
+                <!-- Content: APP -->
+                <div id="content-app" class="tab-content col-start-1 row-start-1 flex flex-col md:flex-row gap-6 w-full transition-opacity duration-300 opacity-0 pointer-events-none z-0">
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-white mb-3">Portal de Autogestión Móvil</h3>
+                        <p class="text-slate-400 text-sm mb-4">Empoderamiento del asegurado para reducir la carga operativa del broker en tareas rutinarias.</p>
+                        <ul class="space-y-2 text-sm text-slate-300">
+                            <li><i class="fa-solid fa-mobile-screen text-brand-400 mr-2"></i> Billetera digital de pólizas y cupones de pago.</li>
+                            <li><i class="fa-solid fa-triangle-exclamation text-brand-400 mr-2"></i> <strong>Botón S.O.S:</strong> Reporte de siniestros guiado con fotos.</li>
+                            <li><i class="fa-solid fa-file-invoice text-brand-400 mr-2"></i> <strong>Mejora tu Póliza:</strong> Sube la foto de tu seguro actual externo para recibir una mejor cotización con IA.</li>
+                            <li><i class="fa-solid fa-gift text-brand-400 mr-2"></i> <strong>Referidos:</strong> Código único para invitar amigos y ganar beneficios (Tracking de conversiones).</li>
+                        </ul>
+                    </div>
+                    <div class="flex-1 hidden md:flex rounded-lg overflow-hidden border border-slate-700 bg-slate-800 items-center justify-center relative min-h-[200px]">
+                         <!-- Mockup Phone CSS -->
+                         <div class="w-32 h-48 border-4 border-slate-600 rounded-2xl relative bg-slate-900 p-2 overflow-hidden flex flex-col shadow-2xl">
+                             <div class="w-10 h-1 bg-slate-600 mx-auto rounded-b-lg absolute top-0 left-1/2 -translate-x-1/2"></div>
+                             <div class="mt-4 bg-brand-900 rounded p-2 text-[8px] text-center text-brand-100">Seguros CBA</div>
+                             <div class="mt-2 bg-slate-800 rounded flex-1 p-2">
+                                 <div class="h-2 bg-slate-600 rounded w-full mb-2"></div>
+                                 <div class="h-10 bg-red-900/50 border border-red-500 rounded flex items-center justify-center text-[10px] text-red-400"><i class="fa-solid fa-car-burst mb-1"></i> S.O.S</div>
+                             </div>
+                         </div>
+                    </div>
+                </div>
+
+                <!-- Content: IA -->
+                <div id="content-ia" class="tab-content col-start-1 row-start-1 flex flex-col md:flex-row gap-6 w-full transition-opacity duration-300 opacity-0 pointer-events-none z-0">
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-white mb-3">Motor de IA y Automatización</h3>
+                        <p class="text-slate-400 text-sm mb-4">Asistencia 24/7 y generación de oportunidades de negocio sin intervención humana inicial.</p>
+                        <ul class="space-y-2 text-sm text-slate-300">
+                            <li><i class="fa-brands fa-whatsapp text-green-400 mr-2"></i> Chatbots omnicanal para soporte técnico de 1er nivel.</li>
+                            <li><i class="fa-solid fa-file-contract text-brand-400 mr-2"></i> <strong>OCR + IA Visión:</strong> Extracción automática de coberturas y costos de pólizas externas para comparativas.</li>
+                            <li><i class="fa-solid fa-brain text-brand-400 mr-2"></i> <strong>Modelo RAG:</strong> Sugerencias automáticas de <i>Cross-selling</i> según perfil.</li>
+                        </ul>
+                    </div>
+                    <div class="flex-1 hidden md:block rounded-lg overflow-hidden border border-slate-700 h-48 md:h-auto">
+                        <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=600&q=80" alt="Red Neuronal Inteligencia Artificial" class="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity" onerror="this.src='https://placehold.co/600x400/1e293b/38bdf8?text=Inteligencia+Artificial'">
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 3. USUARIOS Y PERFILES - Col span 4 -->
+        <section class="col-span-1 md:col-span-4 glass-panel rounded-2xl p-6 fade-in" style="animation-delay: 0.3s;">
+            <h2 class="text-xl font-heading font-semibold text-white mb-4 border-b border-slate-700 pb-2"><i class="fa-solid fa-users text-brand-500 mr-2"></i> Perfiles de Usuario</h2>
+            
+            <div class="space-y-4">
+                <div class="bg-slate-800/60 p-4 rounded-xl border border-slate-700 hover:border-brand-500 transition-colors">
+                    <div class="flex items-center mb-2">
+                        <div class="bg-blue-900/50 p-2 rounded-lg text-brand-400 mr-3"><i class="fa-solid fa-user-tie"></i></div>
+                        <h3 class="font-semibold text-white">Productor / Broker</h3>
+                    </div>
+                    <p class="text-xs text-slate-400">Usuario administrador. Carga pólizas, gestiona siniestros, analiza métricas, aprueba ventas y gestiona recompensas del programa de referidos.</p>
+                </div>
+
+                <div class="bg-slate-800/60 p-4 rounded-xl border border-slate-700 hover:border-green-500 transition-colors">
+                    <div class="flex items-center mb-2">
+                        <div class="bg-green-900/50 p-2 rounded-lg text-green-400 mr-3"><i class="fa-solid fa-user-shield"></i></div>
+                        <h3 class="font-semibold text-white">Asegurado (Cliente)</h3>
+                    </div>
+                    <p class="text-xs text-slate-400">Usuario móvil. Consume información, reporta urgencias, cotiza subiendo su póliza actual y comparte su código de referidos para ganar beneficios.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. ARQUITECTURA / STACK - Col span 4 -->
+        <section class="col-span-1 md:col-span-4 glass-panel rounded-2xl p-6 fade-in" style="animation-delay: 0.4s;">
+            <h2 class="text-xl font-heading font-semibold text-white mb-4 border-b border-slate-700 pb-2"><i class="fa-solid fa-server text-brand-500 mr-2"></i> Arquitectura Técnica</h2>
+            
+            <div class="grid grid-cols-2 gap-3 text-center">
+                <div class="bg-slate-900 rounded-lg p-3 border border-slate-800 hover:-translate-y-1 transition-transform">
+                    <i class="fa-brands fa-react text-blue-400 text-3xl mb-2"></i>
+                    <p class="text-xs font-semibold text-slate-300">React.js</p>
+                    <p class="text-[10px] text-slate-500">Frontend CRM</p>
+                </div>
+                <div class="bg-slate-900 rounded-lg p-3 border border-slate-800 hover:-translate-y-1 transition-transform">
+                    <i class="fa-brands fa-react text-cyan-500 text-3xl mb-2"></i>
+                    <p class="text-xs font-semibold text-slate-300">React Native</p>
+                    <p class="text-[10px] text-slate-500">App Móvil</p>
+                </div>
+                <div class="bg-slate-900 rounded-lg p-3 border border-slate-800 hover:-translate-y-1 transition-transform">
+                    <i class="fa-brands fa-python text-yellow-500 text-3xl mb-2"></i>
+                    <p class="text-xs font-semibold text-slate-300">Django API</p>
+                    <p class="text-[10px] text-slate-500">Backend Core</p>
+                </div>
+                <div class="bg-slate-900 rounded-lg p-3 border border-slate-800 hover:-translate-y-1 transition-transform">
+                    <i class="fa-solid fa-microchip text-purple-400 text-3xl mb-2"></i>
+                    <p class="text-xs font-semibold text-slate-300">LLM + N8N</p>
+                    <p class="text-[10px] text-slate-500">Orquestación IA</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. MAPA DE COMPONENTES Y ALCANCE (Interactive Graph) - Col span 12 -->
+        <section class="col-span-1 md:col-span-12 glass-panel rounded-2xl p-6 fade-in" style="animation-delay: 0.5s;">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4 border-b border-slate-700 pb-4">
+                <div>
+                    <h2 class="text-2xl font-heading font-semibold text-white"><i class="fa-solid fa-sitemap text-brand-500 mr-2"></i> Arquitectura y Delimitación de Alcance</h2>
+                    <p class="text-sm text-slate-400 mt-1">Interacciona con el gráfico: pasa el cursor sobre cada módulo para conocer su función técnica y sus restricciones dentro de la tesis.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- El Gráfico (Component Tree) -->
+                <div class="col-span-1 md:col-span-2 relative bg-slate-900/40 rounded-xl p-8 border border-slate-800 flex flex-col items-center justify-center min-h-[450px] overflow-hidden">
+                    <!-- Background Grid lines -->
+                    <div class="absolute inset-0 z-0 opacity-20" style="background-image: linear-gradient(#334155 1px, transparent 1px), linear-gradient(90deg, #334155 1px, transparent 1px); background-size: 20px 20px;"></div>
+                    
+                    <div class="relative z-10 w-full flex flex-col items-center gap-6">
+                        <!-- Nivel 1: Frontends -->
+                        <div class="flex justify-center gap-8 md:gap-24 w-full">
+                            <div class="component-card bg-slate-800 border-2 border-cyan-500/50 rounded-xl p-4 w-36 md:w-40 text-center cursor-pointer hover:scale-105 hover:border-cyan-400 hover:shadow-[0_0_20px_rgba(34,211,238,0.3)] transition-all" onmouseover="showCompInfo('app')">
+                                <i class="fa-solid fa-mobile-screen text-2xl text-cyan-400 mb-2"></i>
+                                <p class="text-sm font-semibold text-white leading-tight">App Asegurado</p>
+                            </div>
+                            <div class="component-card bg-slate-800 border-2 border-blue-500/50 rounded-xl p-4 w-36 md:w-40 text-center cursor-pointer hover:scale-105 hover:border-blue-400 hover:shadow-[0_0_20px_rgba(59,130,246,0.3)] transition-all" onmouseover="showCompInfo('crm')">
+                                <i class="fa-solid fa-desktop text-2xl text-blue-400 mb-2"></i>
+                                <p class="text-sm font-semibold text-white leading-tight">Panel CRM</p>
+                            </div>
+                        </div>
+
+                        <!-- Conectores Nivel 1 a 2 -->
+                        <div class="flex justify-center gap-8 md:gap-24 w-full -my-7 pointer-events-none">
+                            <div class="w-0.5 h-10 bg-gradient-to-b from-cyan-500/50 to-brand-500/50"></div>
+                            <div class="w-0.5 h-10 bg-gradient-to-b from-blue-500/50 to-brand-500/50"></div>
+                        </div>
+
+                        <!-- Nivel 2: Core & IA -->
+                        <div class="flex justify-center items-center w-full relative">
+                            <div class="component-card bg-brand-900/40 border-2 border-brand-500 rounded-xl p-4 w-48 text-center cursor-pointer hover:scale-105 hover:border-brand-400 hover:shadow-[0_0_25px_rgba(56,189,248,0.4)] transition-all z-10" onmouseover="showCompInfo('core')">
+                                <i class="fa-solid fa-server text-2xl text-brand-400 mb-2"></i>
+                                <p class="text-sm font-bold text-white leading-tight">API Central (Core)</p>
+                            </div>
+                            
+                            <!-- Motor IA (Lateral branch) -->
+                            <div class="absolute left-1/2 ml-24 flex items-center pointer-events-none">
+                                <div class="h-0.5 w-8 md:w-16 bg-gradient-to-r from-brand-500/50 to-purple-500/50"></div>
+                                <div class="component-card pointer-events-auto bg-slate-800 border-2 border-purple-500/50 rounded-xl p-3 w-32 text-center cursor-pointer hover:scale-105 hover:border-purple-400 hover:shadow-[0_0_20px_rgba(168,85,247,0.3)] transition-all" onmouseover="showCompInfo('ia')">
+                                    <i class="fa-solid fa-brain text-xl text-purple-400 mb-1"></i>
+                                    <p class="text-xs font-semibold text-white leading-tight">Motor IA</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Conector Core to Adapters -->
+                        <div class="w-0.5 h-10 bg-gradient-to-b from-brand-500/50 to-amber-500/50 -my-7 pointer-events-none z-0"></div>
+
+                        <!-- Nivel 3: Adapters (Mitigación de Riesgos) -->
+                        <div class="flex justify-center gap-4 md:gap-12 w-full z-10">
+                            <div class="component-card bg-slate-800/80 border-2 border-dashed border-amber-500/80 rounded-xl p-3 w-40 md:w-44 text-center cursor-pointer hover:scale-105 hover:border-amber-400 hover:shadow-[0_0_20px_rgba(245,158,11,0.3)] transition-all relative overflow-hidden" onmouseover="showCompInfo('cotizador')">
+                                <div class="absolute top-0 right-0 bg-amber-500 text-slate-900 text-[9px] font-bold px-2 py-0.5 rounded-bl-lg">LIMITADO</div>
+                                <i class="fa-solid fa-calculator text-xl text-amber-400 mb-1 mt-1"></i>
+                                <p class="text-xs font-semibold text-white leading-tight">Adapter: Mini-Cotizador</p>
+                            </div>
+                            <div class="component-card bg-slate-800/80 border-2 border-dashed border-amber-500/80 rounded-xl p-3 w-40 md:w-44 text-center cursor-pointer hover:scale-105 hover:border-amber-400 hover:shadow-[0_0_20px_rgba(245,158,11,0.3)] transition-all relative overflow-hidden" onmouseover="showCompInfo('polizas')">
+                                <div class="absolute top-0 right-0 bg-amber-500 text-slate-900 text-[9px] font-bold px-2 py-0.5 rounded-bl-lg">LIMITADO</div>
+                                <i class="fa-solid fa-file-shield text-xl text-amber-400 mb-1 mt-1"></i>
+                                <p class="text-xs font-semibold text-white leading-tight">Adapter: Extracción Pólizas</p>
+                            </div>
+                        </div>
+
+                        <!-- Conectores a Externos -->
+                        <div class="flex justify-center gap-4 md:gap-12 w-full -my-7 pointer-events-none">
+                            <div class="w-0.5 h-10 bg-gradient-to-b from-amber-500/50 to-slate-600/50"></div>
+                            <div class="w-0.5 h-10 bg-gradient-to-b from-amber-500/50 to-slate-600/50"></div>
+                        </div>
+
+                        <!-- Nivel 4: Externo -->
+                        <div class="component-card bg-slate-900 border border-slate-700 rounded-xl p-3 w-64 md:w-80 text-center cursor-pointer hover:border-slate-500 transition-all z-10 opacity-80" onmouseover="showCompInfo('externo')">
+                            <i class="fa-solid fa-building-columns text-lg text-slate-400 mb-1"></i>
+                            <p class="text-xs font-medium text-slate-300 leading-tight">Sistemas Externos (Aseguradoras, Multicotizador Real, Pasarelas)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panel de Información (Dynamic Target) -->
+                <div class="col-span-1 bg-slate-800/50 rounded-xl border border-slate-700 p-6 flex flex-col relative overflow-hidden h-full min-h-[350px]">
+                    <!-- Borde superior decorativo animado -->
+                    <div id="info-border" class="absolute top-0 left-0 w-full h-1 bg-slate-500 transition-colors duration-300"></div>
+                    
+                    <!-- Estado Vacío (Default) -->
+                    <div id="info-empty" class="flex-grow flex flex-col justify-center items-center text-center opacity-100 transition-opacity duration-300 absolute inset-0 p-6">
+                        <i class="fa-solid fa-mouse-pointer text-4xl text-brand-500/50 mb-4 animate-bounce"></i>
+                        <h3 class="text-lg font-semibold text-slate-300">Explora el Sistema</h3>
+                        <p class="text-sm text-slate-500 mt-2">Pasa el cursor sobre los componentes del gráfico para ver detalles técnicos y las mitigaciones de riesgo aplicadas.</p>
+                    </div>
+
+                    <!-- Contenido Dinámico -->
+                    <div id="info-content" class="flex-grow flex flex-col opacity-0 pointer-events-none transition-opacity duration-300 absolute inset-0 p-6 bg-slate-800/95 backdrop-blur-sm">
+                        <div class="flex items-center gap-3 mb-4 border-b border-slate-600 pb-4">
+                            <div id="info-icon-container" class="w-12 h-12 rounded-xl flex items-center justify-center bg-slate-700 shadow-lg shrink-0">
+                                <i id="info-icon" class="fa-solid fa-cube text-2xl text-white"></i>
+                            </div>
+                            <h3 id="info-title" class="text-xl font-bold text-white font-heading leading-tight">Nombre Módulo</h3>
+                        </div>
+                        <div class="space-y-4 overflow-y-auto pr-2 custom-scrollbar">
+                            <div>
+                                <h4 class="text-[10px] uppercase tracking-wider font-bold text-slate-400 mb-1">Función Principal</h4>
+                                <p id="info-func" class="text-sm text-slate-200 leading-relaxed">Descripción de lo que hace.</p>
+                            </div>
+                            <div>
+                                <h4 class="text-[10px] uppercase tracking-wider font-bold text-slate-400 mb-1">Tecnologías Clave</h4>
+                                <p id="info-tech" class="text-brand-400 font-mono text-xs bg-slate-900/80 p-2.5 rounded-lg border border-slate-700">React, Node...</p>
+                            </div>
+                            <div id="info-scope-container" class="bg-amber-900/20 border border-amber-700/50 rounded-lg p-3.5 mt-2 shadow-inner">
+                                <h4 class="text-[10px] uppercase tracking-wider font-bold text-amber-500 mb-1.5 flex items-center"><i class="fa-solid fa-triangle-exclamation mr-1.5"></i> Delimitación de Tesis</h4>
+                                <p id="info-scope" class="text-xs text-amber-100/90 leading-relaxed">Restricciones del módulo.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Interactive Scripts -->
+    <script>
+        // Tab switching logic
+        function switchTab(tabId) {
+            // Hide all contents
+            document.querySelectorAll('.tab-content').forEach(el => {
+                el.classList.remove('opacity-100', 'z-10');
+                el.classList.add('opacity-0', 'pointer-events-none', 'z-0');
+            });
+            
+            // Show selected content
+            const selectedContent = document.getElementById(`content-${tabId}`);
+            selectedContent.classList.remove('opacity-0', 'pointer-events-none', 'z-0');
+            selectedContent.classList.add('opacity-100', 'z-10');
+
+            // Reset all button styles
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('bg-brand-600', 'text-white', 'shadow-lg');
+                el.classList.add('text-slate-400');
+            });
+
+            // Set active button style
+            const selectedBtn = document.getElementById(`tab-${tabId}`);
+            selectedBtn.classList.remove('text-slate-400');
+            selectedBtn.classList.add('bg-brand-600', 'text-white', 'shadow-lg');
+        }
+
+        // Datos de los componentes para el gráfico interactivo
+        const compData = {
+            'app': {
+                title: 'App Móvil Asegurado',
+                icon: 'fa-mobile-screen',
+                bgColor: 'bg-cyan-500',
+                func: 'Portal de autogestión. Permite visualizar pólizas activas, descargar cupones, subir frentes de póliza externos para recibir una mejora de cotización, gestionar referidos y usar el "Botón S.O.S" para siniestros.',
+                tech: 'React Native, Expo, Tailwind CSS',
+                scope: 'No incluye procesamiento de pagos interno (redirecciona). El reporte de siniestros captura evidencia pero no liquida el siniestro automáticamente; la resolución depende de la aseguradora.'
+            },
+            'crm': {
+                title: 'Panel Web Broker (CRM)',
+                icon: 'fa-desktop',
+                bgColor: 'bg-blue-500',
+                func: 'Centro de comando para productores. ABMC de clientes, seguimiento de pólizas, tableros de control con métricas de ventas, gestión de siniestros y tracking del programa de referidos.',
+                tech: 'React.js, Tailwind CSS, Recharts',
+                scope: 'Enfoque operativo exclusivo para "Seguros CBA". No se desarrollarán módulos contables complejos, liquidación de sueldos ni integración para facturación fiscal (AFIP).'
+            },
+            'core': {
+                title: 'API Central (Core)',
+                icon: 'fa-server',
+                bgColor: 'bg-brand-500',
+                func: 'El cerebro del ecosistema. Contiene toda la lógica de negocio, reglas de validación, automatización de notificaciones (vencimientos) y gestión de la base de datos.',
+                tech: 'Python, Django REST Framework, PostgreSQL',
+                scope: 'Arquitectura Single-Tenant. No se estructurará la base de datos como un SaaS comercial para vender a otros brokers, se enfocará en resolver la problemática actual.'
+            },
+            'ia': {
+                title: 'Motor de IA & Omnicanal',
+                icon: 'fa-brain',
+                bgColor: 'bg-purple-500',
+                func: 'Asistente 24/7 integrado a WhatsApp/IG. Analiza consultas, aplica modelo RAG para Cross-selling, y utiliza Modelos de Visión (OCR+LLM) para extraer datos de pólizas de la competencia y ofrecer mejoras.',
+                tech: 'N8N (Orquestador), OpenAI/Claude APIs (Vision)',
+                scope: 'La IA sugiere acciones y automatiza el primer contacto. El cierre de ventas complejas y el asesoramiento legal en siniestros se deriva obligatoriamente a un humano.'
+            },
+            'cotizador': {
+                title: 'Módulo Mini-Cotizador',
+                icon: 'fa-calculator',
+                bgColor: 'bg-amber-500',
+                func: 'Microservicio diseñado con patrón Adapter/Strategy para solicitar precios de seguros de vehículos en tiempo real a las aseguradoras.',
+                tech: 'Python, REST APIs, Patrón Adapter',
+                scope: 'RIESGO MITIGADO: Para no depender del multicotizador actual (en desarrollo por 3ros), este módulo aislará el proceso y se conectará solo a 2 aseguradoras para probar el flujo de la tesis.'
+            },
+            'polizas': {
+                title: 'Adapter Extracción Pólizas',
+                icon: 'fa-file-shield',
+                bgColor: 'bg-amber-500',
+                func: 'Módulo encargado de conectarse a los portales de las compañías para descargar y sincronizar automáticamente las pólizas en formato PDF y las fechas de vigencia.',
+                tech: 'Python, Scraping / Consumo APIs Privadas',
+                scope: 'ALCANCE ACOTADO: La integración automática se limitará a 2-3 compañías clave. El diseño por "Adapters" garantiza que agregar las restantes a futuro no requiera modificar el Core.'
+            },
+            'externo': {
+                title: 'Sistemas Externos',
+                icon: 'fa-building-columns',
+                bgColor: 'bg-slate-500',
+                func: 'Infraestructura de las 13 compañías de seguros (Federación Patronal, Sancor, etc.) y plataformas de cobro como MercadoPago.',
+                tech: 'APIs Externas, Portales Web Legacy',
+                scope: 'Fuera de nuestro control. Solo consumimos su información de pólizas o cotizaciones. Los pagos se procesan en sus servidores, eximiendo al proyecto de retenciones fiscales.'
+            }
+        };
+
+        // Función para mostrar información en hover
+        function showCompInfo(compId) {
+            const data = compData[compId];
+            if(!data) return;
+
+            // Ocultar estado vacío, mostrar contenido
+            document.getElementById('info-empty').classList.remove('opacity-100');
+            document.getElementById('info-empty').classList.add('opacity-0', 'pointer-events-none');
+            
+            document.getElementById('info-content').classList.remove('opacity-0', 'pointer-events-none');
+            document.getElementById('info-content').classList.add('opacity-100');
+
+            // Actualizar textos
+            document.getElementById('info-title').textContent = data.title;
+            document.getElementById('info-func').textContent = data.func;
+            document.getElementById('info-tech').textContent = data.tech;
+            document.getElementById('info-scope').textContent = data.scope;
+            
+            // Actualizar Iconos y Colores
+            document.getElementById('info-icon').className = `fa-solid ${data.icon} text-2xl text-white`;
+            document.getElementById('info-icon-container').className = `w-12 h-12 rounded-xl flex items-center justify-center shadow-lg shrink-0 ${data.bgColor}`;
+            document.getElementById('info-border').className = `absolute top-0 left-0 w-full h-1 transition-colors duration-300 ${data.bgColor}`;
+        }
+    </script>
+</body>
+</html>
